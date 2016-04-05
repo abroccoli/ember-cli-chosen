@@ -30,7 +30,7 @@ export default Ember.Component.extend({
       options = _this.get('_options'),
       isMultiple = _this.get('multiple'),
       currentValue = _this.get('value'),
-      selectedValue;
+      selectedValue, deselectedValue;
 
     if(isMultiple) {
       currentValue = Ember.makeArray(currentValue);
@@ -59,6 +59,8 @@ export default Ember.Component.extend({
           if(index !== -1) {
             currentValue.removeAt(index);
           }
+
+          deselectedValue = params.deselected;
         }
 
         selectedValue = currentValue;
@@ -66,8 +68,12 @@ export default Ember.Component.extend({
         selectedValue = params.selected;
       }
 
-      _this.set('value', selectedValue);
-      _this.sendAction('selectionDidChange', selectedValue);
+      if (selectedValue.length){
+        _this.set('value', selectedValue);
+        _this.sendAction('selectionDidChange', selectedValue);
+      } else {
+        _this.sendAction('selectionDidChange', deselectedValue);
+      }
     }).on('chosen:maxselected', function(e, chosen) {
       _this.sendAction('chosenMaxSelected', e, chosen);
     });
